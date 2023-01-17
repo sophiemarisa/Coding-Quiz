@@ -22,146 +22,94 @@ function startQuiz() {
 }
 
 function setNextQuestion() {
-    showQuestion(questionsArray);
-  
-}
+
+    for (i = 0; i < questionsArray.length; i++) {
+
+        console.log(currentQuestionIndex);
+
+        var correctBtn = showQuestion(questionsArray);
+        selectAnswer(correctBtn);
+        currentQuestionIndex = currentQuestionIndex + 1;
+    }
+
+};
+
 
 function showQuestion(question) {
+    questionTitleElement.innerText = question[currentQuestionIndex].question;
+    var correctIndex = 0;
+    var answers = [];
+    var correctAns = "";
+    for (i = 0; i < questionsArray[currentQuestionIndex].answer.length; i++) {
 
+        if (questionsArray[currentQuestionIndex].answer[i].correct === true) {
+            correctIndex = i;
+            correctAns = questionsArray[currentQuestionIndex].answer[i].text;
+        }
 
-    if(currentQuestionIndex > question.length){
-        endQuiz
+        answers.push(questionsArray[currentQuestionIndex].answer[i].text);
     }
-    else{
 
-        questionTitleElement.innerText = question[currentQuestionIndex].question;
-        var correctIndex = 0;
-        var answers = [];
-        var correctAns = "";
-        for (i = 0; i < questionsArray[currentQuestionIndex].answer.length; i++) {
 
-            if (questionsArray[currentQuestionIndex].answer[i].correct === true) {
-                correctIndex = i;
-                correctAns = questionsArray[0].answer[i].text;
+    ans1.innerText = answers[0].toString();
+    ans2.innerText = answers[1].toString();
+    ans3.innerText = answers[2].toString();
+    ans4.innerText = answers[3].toString();
+
+    correctIndex = correctIndex + 1;
+
+    var correctBtn = ""
+
+    if (correctIndex = 1) {
+        ans1.dataset.correct = true;
+
+        correctBtn = "Answer1"
+        //console.log(ans1.dataset.correct)
+    }
+    else if (correctIndex = 2) {
+        ans2.dataset.correct = true;
+        correctBtn = "Answer2"
+        //console.log(ans2.dataset.correct)
+    }
+    else if (correctIndex = 3) {
+        ans3.dataset.correct = true;
+        correctBtn = "Answer3"
+        //console.log(ans3.dataset.correct)
+    }
+    else if (correctIndex = 4) {
+        ans4.dataset.correct = true;
+        correctBtn = "Answer4"
+        //console.log(ans4.dataset.correct)
+    }
+
+    return (correctBtn);
+
+};
+
+function selectAnswer(correctBtn) {
+
+    document.addEventListener('click', function (e) {
+        let element = e.target;
+        if (element.tagName == "BUTTON" & element.className == "ans") {
+            if (element.id === correctBtn) {
+                score = score + 10;
+                console.log(currentQuestionIndex, score);
+                return;
+            
             }
-
-            answers.push(questionsArray[currentQuestionIndex].answer[i].text);
+            else {
+                console.log(currentQuestionIndex, score);
+                return;
+               
+            }
         }
+        return;
+    })
+    return;
+  
+};
 
-
-        ans1.innerText = answers[0].toString();
-        ans2.innerText = answers[1].toString();
-        ans3.innerText = answers[2].toString();
-        ans4.innerText = answers[3].toString();
-
-        correctIndex = correctIndex + 1;
-
-        if (correctIndex = 1) {
-            ans1.dataset.correct = true;
-        }
-        else if (correctIndex = 2) {
-            ans2.dataset.correct = true;
-        }
-        else if (correctIndex = 3) {
-            ans3.dataset.correct = true;
-        }
-        else if (correctIndex = 4) {
-            ans4.dataset.correct = true;
-        }
-
-        selectAnswer();
-
-    }
-        
-    };
-
-function selectAnswer() {
-    ansButtons[0].addEventListener("click", function (event) {
-        event.preventDefault();
-        var isCorrect = ansButtons[0].dataset.correct;
-        if (isCorrect === "true") {
-            score = score + 10;
-            this.removeEventListener("click", arguments.callee,false);
-            
-        }
-        else {
-            this.removeEventListener("click", arguments.callee,false);
-            
-        };
-
-
-      
-
-        currentQuestionIndex = currentQuestionIndex + 1;
-
-
-        showQuestion(questionsArray);
-    });
-
-    ansButtons[1].addEventListener("click", function (event) {
-        event.preventDefault();
-        var isCorrect = ansButtons[1].dataset.correct;
-        if (isCorrect === "true") {
-            score = score + 10;
-            this.removeEventListener("click", arguments.callee,false);
-            
-        }
-        else {
-            this.removeEventListener("click", arguments.callee,false);
-            
-        };
-
-
-      
-
-        currentQuestionIndex = currentQuestionIndex + 1;
-
-
-
-        showQuestion(questionsArray);
-    });
-
-    ansButtons[2].addEventListener("click", function (event) {
-        event.preventDefault();
-        var isCorrect = ansButtons[2].dataset.correct;
-        if (isCorrect === "true") {
-            score = score + 10;
-            this.removeEventListener("click", arguments.callee,false);
-            
-        }
-        else {
-            this.removeEventListener("click", arguments.callee,false);
-            
-        };
-
-        currentQuestionIndex = currentQuestionIndex + 1;
-
-        showQuestion(questionsArray);
-    });
-
-    ansButtons[3].addEventListener("click", function (event) {
-        event.preventDefault();
-        var isCorrect = ansButtons[3].dataset.correct;
-        if (isCorrect === "true") {
-            score = score + 10;
-            this.removeEventListener("click", arguments.callee,false);
-            
-        }
-        else {
-            this.removeEventListener("click", arguments.callee,false);
-            
-        };
-
-
-
-        currentQuestionIndex = currentQuestionIndex + 1;
-
-        showQuestion(questionsArray);
-    });
-
-}
-
-function endQuiz(){
+function endQuiz() {
     console.log("end")
 };
 
