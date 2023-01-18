@@ -8,8 +8,27 @@ var ans2 = document.getElementById("Answer2");
 var ans3 = document.getElementById("Answer3");
 var ans4 = document.getElementById("Answer4");
 var ansButtons = [ans1, ans2, ans3, ans4];
+var endContainer = document.getElementById("end-screen")
+var finalScore = document.getElementById("final-score")
+var submitBtn = document.getElementById("submit")
+var timer = document.getElementById("time")
 
 var score = 0;
+
+var secondsLeft = 30;
+
+function setTime(){
+    var timerInterval = setInterval(function(){
+        secondsLeft--;
+        timer.textContent = secondsLeft ;
+
+        if(secondsLeft === 0){
+            clearInterval(timerInterval);
+            endQuiz();
+        }
+
+    },1000);
+}
 
 startButton.addEventListener("click", startQuiz);
 
@@ -18,36 +37,57 @@ function startQuiz() {
     startButton.classList.add("hide");
     currentQuestionIndex = 0;
     qContainerElement.classList.remove("hide");
+    setTime();
     setNextQuestion();
+    
 }
 
-function setNextQuestion() {
+function endQuiz() {
+    console.log("end")
+    finalScore.innerText = score;
+    endContainer.classList.remove("hide");
+    submitBtn.addEventListener("click", function(){
+        let initials = document.getElementById("initials").value;
 
-    for (i = 0; i < questionsArray.length; i++) {
+        var scoreObject = {
+            name: initials,
+            lastScore: score,
+        }
 
-        console.log(currentQuestionIndex);
+        var allScores = JSON.parse(localStorage.getItem("scores")  || '[]' );
 
-        var correctBtn = showQuestion(questionsArray);
-        selectAnswer(correctBtn);
-        currentQuestionIndex = currentQuestionIndex + 1;
-    }
+        allScores.push(scoreObject);
+
+        localStorage.setItem("scores", JSON.stringify(allScores));
+
+        alert("Click View Highscores in the top left to see the leaderboard!")
+
+    })
+
 
 };
 
+function setNextQuestion() {
+    console.log(currentQuestionIndex)
+        showQuestion(questionsArray[currentQuestionIndex]);
+
+    
+};
 
 function showQuestion(question) {
-    questionTitleElement.innerText = question[currentQuestionIndex].question;
+
+    questionTitleElement.innerText = question.question;
     var correctIndex = 0;
     var answers = [];
     var correctAns = "";
-    for (i = 0; i < questionsArray[currentQuestionIndex].answer.length; i++) {
+    for (i = 0; i < question.answer.length; i++) {
 
-        if (questionsArray[currentQuestionIndex].answer[i].correct === true) {
+        if (question.answer[i].correct === true) {
             correctIndex = i;
-            correctAns = questionsArray[currentQuestionIndex].answer[i].text;
+            correctAns = question.answer[i].text;
         }
 
-        answers.push(questionsArray[currentQuestionIndex].answer[i].text);
+        answers.push(question.answer[i].text);
     }
 
 
@@ -57,33 +97,25 @@ function showQuestion(question) {
     ans4.innerText = answers[3].toString();
 
     correctIndex = correctIndex + 1;
+    
 
     var correctBtn = ""
 
-    if (correctIndex = 1) {
-        ans1.dataset.correct = true;
-
+    if (correctIndex === 1) {
         correctBtn = "Answer1"
-        //console.log(ans1.dataset.correct)
     }
-    else if (correctIndex = 2) {
-        ans2.dataset.correct = true;
+    else if (correctIndex === 2) {
         correctBtn = "Answer2"
-        //console.log(ans2.dataset.correct)
     }
-    else if (correctIndex = 3) {
-        ans3.dataset.correct = true;
+    else if (correctIndex === 3) {
         correctBtn = "Answer3"
-        //console.log(ans3.dataset.correct)
     }
-    else if (correctIndex = 4) {
-        ans4.dataset.correct = true;
+    else if (correctIndex === 4) {
         correctBtn = "Answer4"
-        //console.log(ans4.dataset.correct)
     }
 
-    return (correctBtn);
 
+    selectAnswer(correctBtn);
 };
 
 function selectAnswer(correctBtn) {
@@ -92,26 +124,46 @@ function selectAnswer(correctBtn) {
         let element = e.target;
         if (element.tagName == "BUTTON" & element.className == "ans") {
             if (element.id === correctBtn) {
+                var audio = new Audio('assets/sfx/correct.wav')
+                audio.loop = false;
+                audio.play();
+
+                this.removeEventListener("click", arguments.callee,false);
                 score = score + 10;
-                console.log(currentQuestionIndex, score);
+                //console.log(currentQuestionIndex, score);
+                currentQuestionIndex = currentQuestionIndex + 1;
+                if(currentQuestionIndex ===5){
+                    endQuiz()
+                }
+                else{
+                    setNextQuestion();
+                }
                 return;
-            
             }
             else {
-                console.log(currentQuestionIndex, score);
+                var audio = new Audio('assets/sfx/incorrect.wav')
+                audio.loop = false;
+                audio.play();
+                this.removeEventListener("click", arguments.callee,false);
+                //console.log(currentQuestionIndex, score);
+                currentQuestionIndex = currentQuestionIndex + 1;
+                secondsLeft = secondsLeft - 10;
+                if(currentQuestionIndex ===5 || secondsLeft < 0 ){   
+                    endQuiz();
+                }
+                else{
+                    setNextQuestion();
+                }
                 return;
-               
+
             }
         }
         return;
     })
     return;
-  
 };
 
-function endQuiz() {
-    console.log("end")
-};
+
 
 var questionsArray = [
     {
