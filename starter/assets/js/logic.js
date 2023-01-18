@@ -15,8 +15,9 @@ var timer = document.getElementById("time")
 
 var score = 0;
 
-var secondsLeft = 30;
+var secondsLeft = 60;
 
+//timer function
 function setTime(){
     var timerInterval = setInterval(function(){
         secondsLeft--;
@@ -32,6 +33,7 @@ function setTime(){
 
 startButton.addEventListener("click", startQuiz);
 
+//starts quiz when button pressed
 function startQuiz() {
     console.log("started");
     startButton.classList.add("hide");
@@ -42,6 +44,7 @@ function startQuiz() {
     
 }
 
+//ends quiz when reach the end or time runs out
 function endQuiz() {
     console.log("end")
     finalScore.innerText = score;
@@ -54,9 +57,12 @@ function endQuiz() {
             lastScore: score,
         }
 
+        //gets scores allready in local storage
         var allScores = JSON.parse(localStorage.getItem("scores")  || '[]' );
 
         allScores.push(scoreObject);
+
+        //adds new score to the local storage
 
         localStorage.setItem("scores", JSON.stringify(allScores));
 
@@ -67,6 +73,7 @@ function endQuiz() {
 
 };
 
+//shows the questions 
 function setNextQuestion() {
     console.log(currentQuestionIndex)
         showQuestion(questionsArray[currentQuestionIndex]);
@@ -75,7 +82,7 @@ function setNextQuestion() {
 };
 
 function showQuestion(question) {
-
+    //shows the current q 
     questionTitleElement.innerText = question.question;
     var correctIndex = 0;
     var answers = [];
@@ -90,7 +97,7 @@ function showQuestion(question) {
         answers.push(question.answer[i].text);
     }
 
-
+    //adds answer options to the answer buttons 
     ans1.innerText = answers[0].toString();
     ans2.innerText = answers[1].toString();
     ans3.innerText = answers[2].toString();
@@ -118,13 +125,17 @@ function showQuestion(question) {
     selectAnswer(correctBtn);
 };
 
+//selection of answer 
 function selectAnswer(correctBtn) {
 
+    //listens out for a click on the html doc
     document.addEventListener('click', function (e) {
         let element = e.target;
+
+        //checks if the button pressed is the answer to the  q
         if (element.tagName == "BUTTON" & element.className == "ans") {
             if (element.id === correctBtn) {
-                var audio = new Audio('assets/sfx/correct.wav')
+                var audio = new Audio('starter/assets/sfx/correct.wav') 
                 audio.loop = false;
                 audio.play();
 
@@ -141,7 +152,7 @@ function selectAnswer(correctBtn) {
                 return;
             }
             else {
-                var audio = new Audio('assets/sfx/incorrect.wav')
+                var audio = new Audio('starter/assets/sfx/incorrect.wav')
                 audio.loop = false;
                 audio.play();
                 this.removeEventListener("click", arguments.callee,false);
@@ -167,55 +178,55 @@ function selectAnswer(correctBtn) {
 
 var questionsArray = [
     {
-        question: "Fav sport",
+        question: "Why so JavaScript and Java have similar name?",
         answer: [
-            { text: 'Football', correct: true },
-            { text: "Golf", correct: false },
-            { text: "BasketBall", correct: false },
-            { text: "Rugby", correct: false }
+            { text: "JavaScript’s syntax is loosely based on Java’s", correct: true },
+            { text: "JavaScript is a stripped-down version of Java", correct: false },
+            { text: "They both originated on the island of Java", correct: false },
+            { text: "None of the above", correct: false }
         ]
     },
 
     {
-        question: "2+2=?",
+        question: "What are variables used for in JavaScript Programs?",
         answer: [
-            { text: '3', correct: false },
-            { text: '5', correct: false },
-            { text: '4', correct: true },
-            { text: '6', correct: false },
-
-        ]
-    },
-
-    {
-        question: "3+2=?",
-        answer: [
-            { text: '3', correct: false },
-            { text: '5', correct: true },
-            { text: '4', correct: false },
-            { text: '6', correct: false },
+            { text: 'Varying randomly', correct: false },
+            { text: 'Causing high-school algebra flashbacks', correct: false },
+            { text: "Storing numbers, dates, or other values", correct: true },
+            { text: 'None of the above', correct: false },
 
         ]
     },
 
     {
-        question: "4+2=?",
+        question: "Which of the following can’t be done with client-side JavaScript?",
         answer: [
-            { text: '3', correct: false },
-            { text: '5', correct: false },
-            { text: '4', correct: false },
-            { text: '6', correct: true },
+            { text: 'Validating a form', correct: false },
+            { text: 'Storing the form’s contents to a database file on the server', correct: true },
+            { text: 'Sending a form’s contents by email', correct: false },
+            { text: 'None of the above', correct: false },
 
         ]
     },
 
     {
-        question: "5-2=?",
+        question: "______ tag is an extension to HTML that can enclose any number of JavaScript statements.",
         answer: [
-            { text: '3', correct: true },
-            { text: '5', correct: false },
-            { text: '4', correct: false },
-            { text: '6', correct: false },
+            { text: '<BODY>', correct: false },
+            { text: '<HEAD>', correct: false },
+            { text: '<TITLE>', correct: false },
+            { text: '<SCRIPT>', correct: true },
+
+        ]
+    },
+
+    {
+        question: "Which of the following best describes JavaScript?",
+        answer: [
+            { text: 'an object-oriented scripting language.', correct: true },
+            { text: 'a compiled scripting language.', correct: false },
+            { text: 'a scripting language precompiled in the browser.', correct: false },
+            { text: 'a low-level programming language.', correct: false },
 
         ]
     }
